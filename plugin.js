@@ -21,7 +21,7 @@ ThingsPlugin.prototype.updateView = function(todo)
 			if(todos[i].due) {
 			  var date = new Date();
 			  date.setTime((unixTimeNewYear2001 + parseInt(todos[i].due)) * 1000);
-			  html += "<li class='location'>"+date.toLocaleDateString()+"</li>";
+			  html += "<li class='location'>Due "+date.toLocaleDateString()+"</li>";
 			} else {
 			  html += "<li class='location'> </li>";
 			}
