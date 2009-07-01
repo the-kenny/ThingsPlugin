@@ -9,8 +9,8 @@ ThingsPlugin.prototype.updateView = function(todo)
 
   if (todos.length > 0)
 	{
-	  var html = "<ul><li class='header'>New ToDo: " + 
-		((todos.length==1) ? "" : "s") +
+	  var html = "<ul><li class='header'>New ToDo" + 
+		((todos.length==1) ? "" : "s") + ": " +
 		todos.length+"</li>";
 
 		for (i = 0; i < todos.length; i++) {
