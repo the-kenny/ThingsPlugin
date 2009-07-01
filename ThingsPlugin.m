@@ -23,16 +23,16 @@
 @implementation ThingsPlugin
 
 - (NSDictionary*) data {
-  //NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
 	
-  NSArray *todos = [NSArray arrayWithObjects:[NSDictionary dictionaryWithObjectsAndKeys:@"Irgendwas kaufen", @"text", @"01.01.1970", @"due", nil], nil];
+  NSArray *todos = [NSArray arrayWithObjects:
+							  [NSDictionary dictionaryWithObjectsAndKeys:
+											  @"Irgendwas kaufen", @"text", 
+											@"01.01.1970", @"due", 
+											nil], 
+							nil];
 
-  //[dict setObject:@"Test" forKey:@"data"];
-  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys: @"today", 
-									 todos, nil];
+  NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:todos, @"today", nil];
 
-  //NSDictionary *dict = [[NSDictionary alloc] init];
-	
 	return dict;
 }
 

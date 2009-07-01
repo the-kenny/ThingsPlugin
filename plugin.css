@@ -1,7 +1,7 @@
-div.calendar .header
+div.things .header
 {
 	background-position: 2px -1px;
 	background-repeat: no-repeat;
-	background-image:url(calendar.png);
+	background-image:url(things.png);
 	padding-left: 22px;
 }

@@ -63,6 +63,7 @@ install: ThingsPlugin ThingsPlugin.bundle
 	cp plugin.js $(BUNDLE)/
 	cp Info.plist $(BUNDLE)/
 	cp plugin.css $(BUNDLE)/
+	cp things.png $(BUNDLE)/
 	export CODESIGN_ALLOCATE=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate; ./ldid_intel -S ThingsPlugin
 	cp ThingsPlugin $(BUNDLE)/
 
