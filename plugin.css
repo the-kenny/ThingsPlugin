@@ -1,0 +1,7 @@
+div.calendar .header
+{
+	background-position: 2px -1px;
+	background-repeat: no-repeat;
+	background-image:url(calendar.png);
+	padding-left: 22px;
+}

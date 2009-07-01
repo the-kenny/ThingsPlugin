@@ -1,0 +1,37 @@
+<plist>
+<dict>
+	<key>items</key>
+        <array>
+                <dict>
+                        <key>cell</key>
+                        <string>PSSwitchCell</string>
+                        <key>default</key>
+                        <true/>
+                        <key>defaults</key>
+                        <string>com.ashman.lockinfo.MailPlugin</string>
+                        <key>key</key>
+                        <string>Enabled</string>
+                        <key>label</key>
+                        <string>Enabled</string>
+                </dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Accounts</string>
+			<key>detail</key>
+			<string>MailPluginController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+        </array>
+	<key>title</key>
+        <string>Mail</string>
+</dict>
+</plist>
