@@ -1,37 +1,53 @@
-<plist>
-<dict>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
 	<key>items</key>
-        <array>
-                <dict>
-                        <key>cell</key>
-                        <string>PSSwitchCell</string>
-                        <key>default</key>
-                        <true/>
-                        <key>defaults</key>
-                        <string>com.ashman.lockinfo.MailPlugin</string>
-                        <key>key</key>
-                        <string>Enabled</string>
-                        <key>label</key>
-                        <string>Enabled</string>
-                </dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSLinkCell</string>
-			<key>label</key>
-			<string>Accounts</string>
-			<key>detail</key>
-			<string>MailPluginController</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-		</dict>
-        </array>
+	<array>
+	  <dict>
+		<key>cell</key>
+		<string>PSSwitchCell</string>
+		<key>default</key>
+		<true/>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>key</key>
+		<string>Enabled</string>
+		<key>label</key>
+		<string>Enabled</string>
+	  </dict>
+	  <dict>
+		<key>cell</key>
+		<string>PSLinkListCell</string>
+		<key>default</key>
+		<integer>3</integer>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>detail</key>
+		<string>PSListItemsController</string>
+		<key>key</key>
+		<string>Limit</string>
+		<key>label</key>
+		<string>Limit</string>
+		<key>validTitles</key>
+		<array>
+		  <string>1</string>
+		  <string>2</string>
+		  <string>3</string>
+		  <string>5</string>
+		  <string>10</string>
+		</array>
+		<key>validValues</key>
+		<array>
+		  <integer>1</integer>
+		  <integer>2</integer>
+		  <integer>3</integer>
+		  <integer>5</integer>
+		  <integer>10</integer>
+		</array>
+	  </dict>
+	</array>
 	<key>title</key>
-        <string>Mail</string>
-</dict>
+	<string>Calendar</string>
+  </dict>
 </plist>

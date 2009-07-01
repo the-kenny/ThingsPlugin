@@ -8,10 +8,10 @@ LD=$(CC)
 
 LDFLAGS += -framework CoreFoundation
 LDFLAGS += -framework Foundation
-LDFLAGS += -framework UIKit
-LDFLAGS += -framework CoreGraphics
-LDFLAGS += -framework AddressBookUI
-LDFLAGS += -framework AddressBook
+//LDFLAGS += -framework UIKit
+//LDFLAGS += -framework CoreGraphics
+//LDFLAGS += -framework AddressBookUI
+//LDFLAGS += -framework AddressBook
 //LDFLAGS += -framework QuartzCore
 //LDFLAGS += -framework GraphicsServices
 //LDFLAGS += -framework CoreSurface
@@ -26,11 +26,14 @@ LDFLAGS += -framework AddressBook
 //LDFLAGS += -framework OpenGLES
 //LDFLAGS += -framework OpenAL
 
+LDFLAGS += -lsqlite3
+
 LDFLAGS += -L"$(SDK)/usr/lib"
 LDFLAGS += -F"$(SDK)/System/Library/Frameworks"
 LDFLAGS += -F"$(SDK)/System/Library/PrivateFrameworks"
 
 # Make a bundle
+# Comment this out to make a runnable executable
 LDFLAGS += -bundle
 
 
@@ -64,6 +67,7 @@ install: ThingsPlugin ThingsPlugin.bundle
 	cp Info.plist $(BUNDLE)/
 	cp plugin.css $(BUNDLE)/
 	cp things.png $(BUNDLE)/
+	cp Preferences.plist $(BUNDLE)/
 	export CODESIGN_ALLOCATE=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate; ./ldid_intel -S ThingsPlugin
 	cp ThingsPlugin $(BUNDLE)/
 
