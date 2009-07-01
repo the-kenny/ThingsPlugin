@@ -33,13 +33,6 @@
 
 @implementation ThingsPlugin
 
-+ (void)initialize {
-  [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionary]];
-
-  NSLog(@"Initialized!");
-}
-
-
 - (NSDictionary*) readFromDatabase {
   sqlite3 *database = NULL;
 
