@@ -5,7 +5,7 @@ function ThingsPlugin()
 ThingsPlugin.prototype.bundleIdentifier="cx.ath.the-kenny.ThingsPlugin";
 ThingsPlugin.prototype.updateView = function(todo)
 {
-  var todos = todo.today;
+  var todos = todo.todos;
 
   if (todos.length > 0)
 	{
