@@ -1,0 +1,24 @@
+Datei: /User/Applications/FE652A8B-7E48-4C66-BDFC-8D5D969640AD/Documents/db.sqlite3
+Wichtige Table: Task
+
+focus = 16: Someday
+      =  2: Next
+      =  1: Inbox
+
+status = 1: Active
+       = 4: Archived
+
+type = 2: ToDo
+     = 3: Project
+
+Inbox:
+select title,dueDate from Task where status = 1 and type = 2 and focus = 1;
+
+Next:
+select title,dueDate from Task where status = 1 and type = 2 and focus = 2;
+
+Someday:
+select title,dueDate from Task where status = 1 and type = 2 and focus = 16;
+
+Today:
+select title,dueDate from Task where status = 1 and type = 2 and flagged = 1;
