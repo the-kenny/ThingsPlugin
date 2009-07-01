@@ -3,13 +3,13 @@
 
 NSString *databasePath = @"/User/Applications/FE652A8B-7E48-4C66-BDFC-8D5D969640AD/Documents/db.sqlite3";
 
-NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1 limit 3;";
+NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
-NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2 limit 3;";
+NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
 
-NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16 limit 3;";
+NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16";
 
-NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1 limit 3;";
+NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
 
 @protocol PluginDelegate <NSObject>
 
@@ -27,6 +27,9 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
 @interface ThingsPlugin : NSObject <PluginDelegate> {
   NSDate *lastCheckout;
   NSDictionary *lastData;
+  NSDictionary *preferences;
+  int queryLimit;
+  bool preferencesChanged;
 }
 
 - (NSDictionary*) data;
@@ -40,9 +43,25 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   lastData = nil;
   lastCheckout = nil;
 
+  preferences = [[NSDictionary alloc] initWithContentsOfFile:@"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist"];
+
+  queryLimit = [[preferences valueForKey:@"Limit"] intValue];
+
   NSLog(@"Initialized!");
 
   return self;
+}
+
+- (void)dealloc {
+  if(lastData != nil)
+	[lastData release];
+  
+  if(lastCheckout != nil)
+	[lastCheckout release];
+
+  [preferences release];
+
+  [super dealloc];
 }
 
 - (NSDictionary*) readFromDatabase {
@@ -57,9 +76,19 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   //if(sqlite3_open([[defaults stringForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
   if(sqlite3_open([databasePath UTF8String], &database) == SQLITE_OK) {
 
+	/*
+	NSString *sql = [NSString stringWithFormat:@"%@ limit %i;",
+							  todaySql,
+							  [[preferences valueForKey:@"Limit"] intValue]];
+	*/
+
+	NSString *sql = [NSString stringWithFormat:@"%@ limit %i", todaySql, queryLimit];
+
 	// Setup the SQL Statement and compile it for faster access
 	sqlite3_stmt *compiledStatement;
-	if(sqlite3_prepare_v2(database, [todaySql UTF8String], -1, &compiledStatement, NULL) == SQLITE_OK) {
+	if(sqlite3_prepare_v2(database, [sql UTF8String], -1, &compiledStatement, NULL) == SQLITE_OK) {
+	  NSLog(@"Database checkout worked!");
+
 
 	  // Loop through the results and add them to the feeds array
 	  while(sqlite3_step(compiledStatement) == SQLITE_ROW) {
@@ -90,6 +119,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   sqlite3_close(database);
 
   [dict setObject:todos forKey:@"todos"];  
+  //[dict setObject:preferences forKey:@"preferences"];
   //[dict retain];
   
   //[pool drain];
@@ -133,6 +163,20 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   return lastData;
 }
 
+- (void) setPreferences:(NSDictionary*) prefs {
+  [preferences release];
+  preferences = [prefs retain];
+
+  queryLimit = [[preferences valueForKey:@"Limit"] intValue];
+
+  //Force an update of the data
+  if(lastData != nil) {
+	[lastData release];
+	lastData = nil;
+  }
+
+  NSLog(@"PreferencesChanged");
+}
 
 @end
 

@@ -12,10 +12,9 @@ ThingsPlugin.prototype.updateView = function(todo)
   if (todos.length > 0)
 	{
 	  var html = "<ul><li class='header'>ToDo" + 
-		((todos.length==1) ? "" : "s") + " today: " +
-		todos.length+"</li>";
+		((todos.length==1) ? "" : "s") + " today:</li>";
 
-		for (i = 0; i < todos.length; i++) {
+	  for (i = 0; i < todos.length; i++) {
 			html += "<li class='summary"+(i == 0 ? " firstItem" : "")+(i == todos.length - 1 ? " lastItem" : "")+"'>"+todos[i].text+"</li>";
 
 			if(todos[i].due) {
@@ -26,6 +25,11 @@ ThingsPlugin.prototype.updateView = function(todo)
 			  html += "<li class='location'> </li>";
 			}
 		}
+
+	  /*
+	  for(var prop in todo)
+		html += "<li>" + prop + "</li>";
+	  */
 
 		html += "</ul>";
 		getPluginDiv(this).className = "things";
