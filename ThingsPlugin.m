@@ -1,15 +1,15 @@
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
 
-  NSString *databasePath = @"/User/Applications/FE652A8B-7E48-4C66-BDFC-8D5D969640AD/Documents/db.sqlite3";
+NSString *databasePath = @"/User/Applications/FE652A8B-7E48-4C66-BDFC-8D5D969640AD/Documents/db.sqlite3";
 
-  NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1 limit 3;";
+NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1 limit 3;";
 
-  NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2 limit 3;";
+NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2 limit 3;";
 
-  NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16 limit 3;";
+NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16 limit 3;";
 
-  NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1 limit 3;";
+NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1 limit 3;";
 
 @protocol PluginDelegate <NSObject>
 
@@ -25,7 +25,8 @@
 
 
 @interface ThingsPlugin : NSObject <PluginDelegate> {
-
+  NSDate *lastCheckout;
+  NSDictionary *lastData;
 }
 
 - (NSDictionary*) data;
@@ -33,16 +34,25 @@
 
 @implementation ThingsPlugin
 
+- (id)init {
+  self = [super init];
+
+  lastData = nil;
+  lastCheckout = nil;
+
+  NSLog(@"Initialized!");
+
+  return self;
+}
+
 - (NSDictionary*) readFromDatabase {
-  sqlite3 *database = NULL;
+  //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-  //NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-  //NSLog(@"%@", [defaults dictionaryRepresentation]);								
 
   NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:1];
   NSMutableArray *todos = [NSMutableArray arrayWithCapacity:4];
+
+  sqlite3 *database = NULL;
 
   //if(sqlite3_open([[defaults stringForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
   if(sqlite3_open([databasePath UTF8String], &database) == SQLITE_OK) {
@@ -80,23 +90,47 @@
   sqlite3_close(database);
 
   [dict setObject:todos forKey:@"todos"];  
-  [dict retain];
+  //[dict retain];
   
-  [pool release];
+  //[pool drain];
+
+  NSLog(@"Successfully read from database.");
 
 
-  return [dict autorelease];
+  return dict;
 }
 
 - (NSDictionary*) data {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-  NSDictionary* dict = [self readFromDatabase];
-  [dict retain];
+  NSDictionary *fileAttributes = [[NSFileManager defaultManager] 
+  								   fileAttributesAtPath:databasePath
+  								   traverseLink:YES];
 
-  [pool release];
+  NSDate* lastModified = [fileAttributes objectForKey:NSFileModificationDate];
 
-  return [dict autorelease];
+  if(lastCheckout == nil || lastData == nil ||
+	 [lastModified compare:lastCheckout] == NSOrderedDescending) {
+	NSLog(@"We don't have the last time or data, updating");
+
+	NSDictionary* dict = [self readFromDatabase];
+	
+	if(lastData != nil)
+	  [lastData release];
+	lastData = [dict retain];
+
+	if(lastCheckout != nil)
+	  [lastCheckout release];
+	lastCheckout = [lastModified retain];
+
+	NSLog(@"Succesfully got new data");
+  } else {
+	NSLog(@"No update");
+  }
+  
+  [pool drain];
+  
+  return lastData;
 }
 
 
@@ -104,11 +138,11 @@
 
 int main() {
   /*
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  //  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
   ThingsPlugin* p = [[ThingsPlugin alloc] init];
-  NSLog(@"%@", [p readFromDatabase]);
+  NSLog(@"%@", [p data]);
 
-  [pool release];
+  //  [pool release];
   */
 }
