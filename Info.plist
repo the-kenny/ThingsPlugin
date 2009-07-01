@@ -35,7 +35,7 @@
       <string>com.culturedcode.ThingsTouch</string>
     </array>
     <key>LIShowPreferences</key>
-    <true/>
+    <false/>
     <key>LISortable</key>
     <true/>
   </dict>
