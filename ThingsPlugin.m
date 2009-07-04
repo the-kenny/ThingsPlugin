@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
 
-NSString *databasePath = @"/User/Applications/FE652A8B-7E48-4C66-BDFC-8D5D969640AD/Documents/db.sqlite3";
+NSString *databasePath = @"/User/Applications/AC624048-1944-4019-8581-407A502E19AC/Documents/db.sqlite3";
 
 NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
