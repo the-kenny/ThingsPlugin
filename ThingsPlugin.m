@@ -1,7 +1,9 @@
 #import <Foundation/Foundation.h>
 #import <sqlite3.h>
 
-NSString *databasePath = @"/User/Applications/AC624048-1944-4019-8581-407A502E19AC/Documents/db.sqlite3";
+//NSString *databasePath = @"/User/Applications/AC624048-1944-4019-8581-407A502E19AC/Documents/db.sqlite3";
+
+NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist";
 
 NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
@@ -27,7 +29,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
 @interface ThingsPlugin : NSObject <PluginDelegate> {
   NSDate *lastCheckout;
   NSDictionary *lastData;
-  NSDictionary *preferences;
+  NSMutableDictionary *preferences;
   int queryLimit;
   //bool preferencesChanged;
   bool enabled;
@@ -44,10 +46,31 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   lastData = nil;
   lastCheckout = nil;
 
-  preferences = [[NSDictionary alloc] initWithContentsOfFile:@"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist"];
+  preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencesPath];
 
   queryLimit = [[preferences valueForKey:@"Limit"] intValue];
   enabled = [[preferences valueForKey:@"Enabled"] boolValue];
+  
+  NSString* databasePath = [preferences objectForKey:@"databasePath"];
+  if(databasePath == nil || [databasePath length] == 0) {
+	NSLog(@"We do not have the database path, going to search for it.");
+	NSFileManager* fm = [NSFileManager defaultManager];
+
+	NSString* appPath = @"/User/Applications/";
+	NSArray* uuidDirs = [fm directoryContentsAtPath:appPath];
+	NSEnumerator *e = [uuidDirs objectEnumerator];
+	bool cont = true;
+	NSString* uuid = nil;
+	while(cont && (uuid = [e nextObject])) {
+	  if([[fm directoryContentsAtPath:[appPath stringByAppendingString:uuid]] containsObject:@"Things.app"]) {
+		[preferences setObject:[NSString stringWithFormat:@"/User/Applications/%@/Documents/db.sqlite3", uuid] forKey:@"databasePath"];
+		[preferences writeToFile:preferencesPath atomically:YES];
+		cont = false;
+		NSLog(@"Found the path: %@", [preferences objectForKey:@"databasePath"]);
+	  }
+	}
+	
+  }
 
   NSLog(@"Initialized!");
 
@@ -76,7 +99,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   sqlite3 *database = NULL;
 
   //if(sqlite3_open([[defaults stringForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
-  if(sqlite3_open([databasePath UTF8String], &database) == SQLITE_OK) {
+  if(sqlite3_open([[preferences objectForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
 
 	/*
 	NSString *sql = [NSString stringWithFormat:@"%@ limit %i;",
@@ -121,7 +144,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   sqlite3_close(database);
 
   [dict setObject:todos forKey:@"todos"];  
-  //[dict setObject:preferences forKey:@"preferences"];
+  [dict setObject:preferences forKey:@"preferences"];
   //[dict retain];
   
   //[pool drain];
@@ -138,7 +161,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   if(enabled == true) {
 
 	NSDictionary *fileAttributes = [[NSFileManager defaultManager] 
-									 fileAttributesAtPath:databasePath
+									 fileAttributesAtPath:[preferences objectForKey:@"databasePath"]
 									 traverseLink:YES];
 
 	NSDate* lastModified = [fileAttributes objectForKey:NSFileModificationDate];
@@ -167,7 +190,11 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
 	return lastData;
   } else {
 	[pool drain];
-	return [NSDictionary dictionary];
+	NSLog(@"ThingsPlugin is disabled.");
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+						   // preferences, @"preferences", 
+						   [NSArray array], @"todos",
+						 nil];
   }
   
 }
