@@ -25,6 +25,18 @@
 		<string>cx.ath.the-kenny.ThingsPlugin</string>
 		<key>key</key>
 		<string>Limit</string>
+		<key>label</key>
+		<string>Limit</string>
+	  </dict>
+	  <dict>
+		<key>cell</key>
+		<string>PSEditTextCell</string>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>key</key>
+		<string>databasePath</string>
+		<key>label</key>
+		<string>Path</string>
 	  </dict>
 	</array>
   </dict>
