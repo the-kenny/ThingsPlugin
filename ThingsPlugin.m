@@ -29,7 +29,8 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   NSDictionary *lastData;
   NSDictionary *preferences;
   int queryLimit;
-  bool preferencesChanged;
+  //bool preferencesChanged;
+  bool enabled;
 }
 
 - (NSDictionary*) data;
@@ -46,6 +47,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   preferences = [[NSDictionary alloc] initWithContentsOfFile:@"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist"];
 
   queryLimit = [[preferences valueForKey:@"Limit"] intValue];
+  enabled = [[preferences valueForKey:@"Enabled"] boolValue];
 
   NSLog(@"Initialized!");
 
@@ -133,34 +135,41 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
 - (NSDictionary*) data {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-  NSDictionary *fileAttributes = [[NSFileManager defaultManager] 
-  								   fileAttributesAtPath:databasePath
-  								   traverseLink:YES];
+  if(enabled == true) {
 
-  NSDate* lastModified = [fileAttributes objectForKey:NSFileModificationDate];
+	NSDictionary *fileAttributes = [[NSFileManager defaultManager] 
+									 fileAttributesAtPath:databasePath
+									 traverseLink:YES];
 
-  if(lastCheckout == nil || lastData == nil ||
-	 [lastModified compare:lastCheckout] == NSOrderedDescending) {
-	NSLog(@"We don't have the last time or data, updating");
+	NSDate* lastModified = [fileAttributes objectForKey:NSFileModificationDate];
 
-	NSDictionary* dict = [self readFromDatabase];
+	if(lastCheckout == nil || lastData == nil ||
+	   [lastModified compare:lastCheckout] == NSOrderedDescending) {
+	  NSLog(@"We don't have the last time or data, updating");
+
+	  NSDictionary* dict = [self readFromDatabase];
 	
-	if(lastData != nil)
-	  [lastData release];
-	lastData = [dict retain];
+	  if(lastData != nil)
+		[lastData release];
+	  lastData = [dict retain];
 
-	if(lastCheckout != nil)
-	  [lastCheckout release];
-	lastCheckout = [lastModified retain];
+	  if(lastCheckout != nil)
+		[lastCheckout release];
+	  lastCheckout = [lastModified retain];
 
-	NSLog(@"Succesfully got new data");
+	  NSLog(@"Succesfully got new data");
+	} else {
+	  NSLog(@"No update");
+	}
+  
+	[pool drain];
+  
+	return lastData;
   } else {
-	NSLog(@"No update");
+	[pool drain];
+	return [NSDictionary dictionary];
   }
   
-  [pool drain];
-  
-  return lastData;
 }
 
 - (void) setPreferences:(NSDictionary*) prefs {
@@ -168,6 +177,8 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   preferences = [prefs retain];
 
   queryLimit = [[preferences valueForKey:@"Limit"] intValue];
+  enabled = [[preferences valueForKey:@"Enabled"] boolValue];
+
 
   //Force an update of the data
   if(lastData != nil) {
