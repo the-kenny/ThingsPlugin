@@ -78,7 +78,7 @@ install: ThingsPlugin $(BUNDLE) $(ID)
 	cp plugin.css $(ID)/
 	cp things.png $(ID)/
 
-deviceinstall: ThingsPlugin
+deviceinstall: install
 	scp -r $(BUNDLE) root@$(IP):/Library/LockInfo/Plugins/
 	scp -r $(ID) root@$(IP):/Library/Themes/LockInfo.theme/Bundles/
 
