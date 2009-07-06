@@ -60,11 +60,12 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
   preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencesPath];
 
   queryLimit = [[preferences valueForKey:@"Limit"] intValue];
+
+  NSFileManager* fm = [NSFileManager defaultManager];
   
   NSString* databasePath = [preferences objectForKey:@"databasePath"];
-  if(databasePath == nil || [databasePath length] == 0) {
+  if(databasePath == nil || [fm fileExistsAtPath:[preferences objectForKey:@"databasePath"]]) {
 	NSLog(@"We do not have the database path, going to search for it.");
-	NSFileManager* fm = [NSFileManager defaultManager];
 
 	NSString* appPath = @"/User/Applications/";
 	NSArray* uuidDirs = [fm directoryContentsAtPath:appPath];
