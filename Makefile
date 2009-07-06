@@ -52,6 +52,7 @@ CPPFLAGS=$CFLAGS
 
 
 BUNDLE=ThingsPlugin.bundle
+THEME=ThingsLockInfo.theme
 ID=cx.ath.the-kenny.ThingsPlugin
 
 IP=192.168.1.58
@@ -65,24 +66,26 @@ ThingsPlugin.o: ThingsPlugin.m
 $(BUNDLE): 
 	mkdir $(BUNDLE)
 
-$(ID):
-	mkdir $(ID)
+$(THEME):
+	mkdir $(THEME)
+	mkdir $(THEME)/Bundles/
+	mkdir $(THEME)/Bundles/$(ID)
 
-install: ThingsPlugin $(BUNDLE) $(ID)
+install: ThingsPlugin $(BUNDLE) $(THEME)
 	cp Info.plist $(BUNDLE)/
 	cp Preferences.plist $(BUNDLE)/
 	export CODESIGN_ALLOCATE=/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/codesign_allocate; ./ldid_intel -S ThingsPlugin
 	cp ThingsPlugin $(BUNDLE)/
 
-	cp plugin.js $(ID)/
-	cp plugin.css $(ID)/
-	cp things.png $(ID)/
+	cp plugin.js $(THEME)/Bundles/$(ID)/
+	cp plugin.css $(THEME)/Bundles/$(ID)/
+	cp things.png $(THEME)/Bundles/$(ID)/
 
 deviceinstall: install
 	scp -r $(BUNDLE) root@$(IP):/Library/LockInfo/Plugins/
-	scp -r $(ID) root@$(IP):/Library/Themes/LockInfo.theme/Bundles/
+	scp -r $(THEME) root@$(IP):/Library/Themes/
 
 clean: 
-	rm *.o ThingsPlugin $(BUNDLE)/* $(ID)/*
+	rm *.o ThingsPlugin $(BUNDLE)/*
 	rmdir $(BUNDLE)
-	rmdir $(ID)
+	rm -r $(THEME)
