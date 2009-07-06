@@ -10,7 +10,7 @@ ThingsPlugin.prototype.updateView = function(todo) {
 
   if (todos.length > 0) {
 	var html = "<ul><li class='header'>ToDo" + 
-	  ((todos.length==1) ? "" : "s") + " today:</li>";
+	  ((todos.length==1) ? " " : "s ") + todo.preferences.List + ":</li>";
 
 	for (i = 0; i < todos.length; i++) {
 	  html += "<li class='summary"+(i == 0 ? " firstItem" : "")+(i == todos.length - 1 ? " lastItem" : "")+"'>"+todos[i].text+"</li>";
