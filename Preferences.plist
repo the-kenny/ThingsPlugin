@@ -38,6 +38,34 @@
 		<key>label</key>
 		<string>Path</string>
 	  </dict>
+	  <dict>
+		<key>cell</key>
+		<string>PSLinkListCell</string>
+		<key>default</key>
+		<string>Today</string>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>detail</key>
+		<string>PSListItemsController</string>
+		<key>key</key>
+		<string>List</string>
+		<key>label</key>
+		<string>List</string>
+		<key>validTitles</key>
+		<array>
+		  <string>Today</string>
+		  <string>Next</string>
+		  <string>Someday</string>
+		  <string>Inbox</string>
+		</array>
+		<key>validValues</key>
+		<array>
+		  <string>today</string>
+		  <string>next</string>
+		  <string>someday</string>
+		  <string>inbox</string>
+		</array>
+	  </dict>
 	</array>
   </dict>
 </plist>

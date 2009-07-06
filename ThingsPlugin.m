@@ -5,13 +5,7 @@
 
 NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist";
 
-NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
-NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
-
-NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16";
-
-NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
 
 @protocol PluginDelegate <NSObject>
 
@@ -31,6 +25,9 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   NSDictionary *lastData;
   NSMutableDictionary *preferences;
   int queryLimit;
+
+  NSDictionary* sqlDict;
+
   //bool preferencesChanged;
 }
 
@@ -44,6 +41,21 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
 
   lastData = nil;
   lastCheckout = nil;
+
+  NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
+
+ NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
+
+ NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16";
+
+ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
+
+ sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+						   todaySql, @"today",
+						 nextSql, @"next",
+						 somedaySql, @"someday",
+						 inboxSql, @"inbox",
+						 nil];
 
   preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencesPath];
 
@@ -82,6 +94,8 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
   if(lastCheckout != nil)
 	[lastCheckout release];
 
+  [sqlDict release];
+
   [preferences release];
 
   [super dealloc];
@@ -105,7 +119,7 @@ NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type 
 							  [[preferences valueForKey:@"Limit"] intValue]];
 	*/
 
-	NSString *sql = [NSString stringWithFormat:@"%@ limit %i", todaySql, queryLimit];
+	NSString *sql = [NSString stringWithFormat:@"%@ limit %i", [sqlDict objectForKey:[preferences objectForKey:@"List"]], queryLimit];
 
 	// Setup the SQL Statement and compile it for faster access
 	sqlite3_stmt *compiledStatement;
