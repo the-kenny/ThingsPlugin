@@ -64,7 +64,7 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
   NSFileManager* fm = [NSFileManager defaultManager];
   
   NSString* databasePath = [preferences objectForKey:@"databasePath"];
-  if(databasePath == nil || [fm fileExistsAtPath:[preferences objectForKey:@"databasePath"]]) {
+  if(databasePath == nil || [fm fileExistsAtPath:[preferences objectForKey:@"databasePath"]] == NO) {
 	NSLog(@"We do not have the database path, going to search for it.");
 
 	NSString* appPath = @"/User/Applications/";
