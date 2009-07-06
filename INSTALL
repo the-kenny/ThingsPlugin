@@ -1,0 +1,10 @@
+ThingsPlugin for LockscreenInfo.
+
+Connect to your iPhone/iPod with any (S)FTP client and copy the following directories to the specified locations:
+
+- ThingsPlugin.bundle			-> /Library/LockInfo/Plugins/
+- cx.ath.the-kenny.ThingsPlugin -> /Library/Themes/LockInfo.theme/Bundles/
+
+If you have a working development environment on your mac you can build the plugin yourself. Just edit "IP" in the makefile to point to your device-ip and run "make deviceinstall".
+
+After you've installed the plugin, you should select the appropriate list you want to display in the settings, and finally restart the springboard (or just reboot the device)
