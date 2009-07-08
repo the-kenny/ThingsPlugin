@@ -45,18 +45,18 @@
 
   NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
- NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
+  NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
 
- NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16";
+  NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16";
 
- NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
+  NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
 
- sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
-						   todaySql, @"today",
-						 nextSql, @"next",
-						 somedaySql, @"someday",
-						 inboxSql, @"inbox",
-						 nil];
+  sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
+									todaySql, @"today",
+								  nextSql, @"next",
+								  somedaySql, @"someday",
+								  inboxSql, @"inbox",
+								  nil];
 
   preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencesPath];
 
@@ -118,12 +118,16 @@
   if(sqlite3_open([[preferences objectForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
 
 	/*
-	NSString *sql = [NSString stringWithFormat:@"%@ limit %i;",
-							  todaySql,
-							  [[preferences valueForKey:@"Limit"] intValue]];
+	  NSString *sql = [NSString stringWithFormat:@"%@ limit %i;",
+	  todaySql,
+	  [[preferences valueForKey:@"Limit"] intValue]];
 	*/
 
-	NSString *sql = [NSString stringWithFormat:@"%@ limit %i", [sqlDict objectForKey:[preferences objectForKey:@"List"]], queryLimit];
+	NSString *sql = [NSString stringWithFormat:@"%@ order by createdDate %@ limit %i", 
+							  [sqlDict objectForKey:
+										 [preferences objectForKey:@"List"]], 
+							  [preferences objectForKey:@"Order"],
+							  queryLimit];
 
 	// Setup the SQL Statement and compile it for faster access
 	sqlite3_stmt *compiledStatement;

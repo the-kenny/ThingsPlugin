@@ -66,6 +66,30 @@
 		  <string>inbox</string>
 		</array>
 	  </dict>
+	  <dict>
+		<key>cell</key>
+		<string>PSLinkListCell</string>
+		<key>default</key>
+		<string>desc</string>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>detail</key>
+		<string>PSListItemsController</string>
+		<key>key</key>
+		<string>Order</string>
+		<key>label</key>
+		<string>Ordering</string>
+		<key>validTitles</key>
+		<array>
+		  <string>New ToDos first</string>
+		  <string>Old ToDos first</string>
+		</array>
+		<key>validValues</key>
+		<array>
+		  <string>desc</string>
+		  <string>asc</string>
+		</array>
+	  </dict>
 	</array>
   </dict>
 </plist>
