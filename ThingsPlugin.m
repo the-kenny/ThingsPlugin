@@ -3,10 +3,6 @@
 
 //NSString *databasePath = @"/User/Applications/AC624048-1944-4019-8581-407A502E19AC/Documents/db.sqlite3";
 
-NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist";
-
-
-
 @protocol PluginDelegate <NSObject>
 
 // This data dictionary will be converted into JSON by the extension.  This method will get called
@@ -27,8 +23,9 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
   int queryLimit;
 
   NSDictionary* sqlDict;
+  NSString* preferencesPath;
 
-  //bool preferencesChanged;
+  NSAutoreleasePool* pool;
 }
 
 - (NSDictionary*) data;
@@ -41,6 +38,10 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
 
   lastData = nil;
   lastCheckout = nil;
+
+  pool = [[NSAutoreleasePool alloc] init];
+
+  preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist";
 
   NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
@@ -98,6 +99,8 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
   [sqlDict release];
 
   [preferences release];
+
+  [pool release];
 
   [super dealloc];
 }
@@ -169,7 +172,7 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
 }
 
 - (NSDictionary*) data {
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  NSAutoreleasePool *datapool = [[NSAutoreleasePool alloc] init];
 
   NSDictionary *fileAttributes = [[NSFileManager defaultManager] 
 								   fileAttributesAtPath:[preferences objectForKey:@"databasePath"]
@@ -196,7 +199,7 @@ NSString* preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsP
 	NSLog(@"No update");
   }
   
-  [pool drain];
+  [datapool drain];
   
   return lastData;
 }
