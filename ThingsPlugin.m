@@ -51,11 +51,14 @@
 
   NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
 
+  NSString *allSql = @"select title,dueDate from Task where status = 1";
+
   sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
 									todaySql, @"today",
 								  nextSql, @"next",
 								  somedaySql, @"someday",
 								  inboxSql, @"inbox",
+								  allSql, @"all",
 								  nil];
 
   preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencesPath];

@@ -57,6 +57,7 @@
 		  <string>Next</string>
 		  <string>Someday</string>
 		  <string>Inbox</string>
+		  <string>Everything</string>
 		</array>
 		<key>validValues</key>
 		<array>
@@ -64,6 +65,7 @@
 		  <string>next</string>
 		  <string>someday</string>
 		  <string>inbox</string>
+		  <string>all</string>
 		</array>
 	  </dict>
 	  <dict>
