@@ -33,6 +33,8 @@
 
 @implementation ThingsPlugin
 
+//Init initializes some variables and performs initial things like searching
+//the database
 - (id)init {
   self = [super init];
 
@@ -43,6 +45,7 @@
 
   preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist";
 
+  //The different sql-queries
   NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
 
   NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
@@ -53,6 +56,7 @@
 
   NSString *allSql = @"select title,dueDate from Task where status = 1";
 
+  //Add the to a dictionary to have access witht the settings-keys
   sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
 									todaySql, @"today",
 								  nextSql, @"next",
@@ -68,9 +72,12 @@
   NSFileManager* fm = [NSFileManager defaultManager];
   
   NSString* databasePath = [preferences objectForKey:@"databasePath"];
+
+  //If databasePath isn't set, search for the dir and set it
   if(databasePath == nil || [fm fileExistsAtPath:[preferences objectForKey:@"databasePath"]] == NO) {
 	NSLog(@"We do not have the database path, going to search for it.");
 
+	//Search for the application-directory (Recursively traverse the App-Dir)
 	NSString* appPath = @"/User/Applications/";
 	NSArray* uuidDirs = [fm directoryContentsAtPath:appPath];
 	NSEnumerator *e = [uuidDirs objectEnumerator];
@@ -87,7 +94,7 @@
 	
   }
 
-  NSLog(@"Initialized!");
+  NSLog(@"[ThingsPlugin] Initialized!");
 
   return self;
 }
@@ -108,6 +115,8 @@
   [super dealloc];
 }
 
+//readFromDatabase reads the data from the database and returns a dictionary 
+//which can be passed to plugin.js without changing it.
 - (NSDictionary*) readFromDatabase {
   //NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -117,7 +126,6 @@
 
   sqlite3 *database = NULL;
 
-  //if(sqlite3_open([[defaults stringForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
   if(sqlite3_open([[preferences objectForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
 
 	/*
@@ -126,6 +134,7 @@
 	  [[preferences valueForKey:@"Limit"] intValue]];
 	*/
 
+	//Build the query (query + ordering + limit)
 	NSString *sql = [NSString stringWithFormat:@"%@ order by createdDate %@ limit %i", 
 							  [sqlDict objectForKey:
 										 [preferences objectForKey:@"List"]], 
@@ -178,9 +187,12 @@
   return dict;
 }
 
+//data returns the dictionary for plugin.js, the data is cached and it only
+//updates the data if the file was changed since the last checkout
 - (NSDictionary*) data {
   NSAutoreleasePool *datapool = [[NSAutoreleasePool alloc] init];
 
+  //Check if the file was modified since the last change
   NSDictionary *fileAttributes = [[NSFileManager defaultManager] 
 								   fileAttributesAtPath:[preferences objectForKey:@"databasePath"]
 								   traverseLink:YES];

@@ -4,6 +4,7 @@ function ThingsPlugin()
 
 ThingsPlugin.prototype.bundleIdentifier="cx.ath.the-kenny.ThingsPlugin";
 ThingsPlugin.prototype.updateView = function(todo) {
+  //For date calculcation
   var unixTimeNewYear2001 = 978307200;
 
   var todos = todo.todos;
@@ -17,6 +18,10 @@ ThingsPlugin.prototype.updateView = function(todo) {
 
 	  if(todos[i].due) {
 		var date = new Date();
+
+		//The years are stored in seconds since the unix time at 01/01/2001
+		//We add the unix time to the due-date to get the time as "real"
+		//unix time (Seconds since 01/01/1970)
 		date.setTime((unixTimeNewYear2001 + parseInt(todos[i].due)) * 1000);
 		html += "<li class='location'>Due "+date.toLocaleDateString()+"</li>";
 	  } else {
