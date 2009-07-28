@@ -1,5 +1,4 @@
-div.things .header
-{
+div.things .header {
 	background-position: 2px -1px;
 	background-repeat: no-repeat;
 	background-image:url(things.png);

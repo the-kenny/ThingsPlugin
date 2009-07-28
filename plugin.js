@@ -14,18 +14,25 @@ ThingsPlugin.prototype.updateView = function(todo) {
 	  ((todos.length==1) ? " " : "s ") + todo.preferences.List + ":</li>";
 
 	for (i = 0; i < todos.length; i++) {
-	  html += "<li class='summary"+(i == 0 ? " firstItem" : "")+(i == todos.length - 1 ? " lastItem" : "")+"'>"+todos[i].text+"</li>";
+	  html += "<li class='summary" + (i == 0 ? " firstItem" : "")+(i == todos.length - 1 ? " lastItem" : "")+"'>" + todos[i].text + "</li>";
 
-	  if(todos[i].due) {
-		var date = new Date();
+	  if(todos[i].due || todos[i].project) {
+		html += "<li class='location'>";
 
-		//The years are stored in seconds since the unix time at 01/01/2001
-		//We add the unix time to the due-date to get the time as "real"
-		//unix time (Seconds since 01/01/1970)
-		date.setTime((unixTimeNewYear2001 + parseInt(todos[i].due)) * 1000);
-		html += "<li class='location'>Due "+date.toLocaleDateString()+"</li>";
-	  } else {
-		html += "<li class='location'> </li>";
+		if(todos[i].project) 
+		  html += "Project: " + todos[i].project + "   "; 
+		
+		if(todos[i].due) {
+		  var date = new Date();
+
+		  //The years are stored in seconds since the unix time at 01/01/2001
+		  //We add the unix time to the due-date to get the time as "real"
+		  //unix time (Seconds since 01/01/1970)
+		  date.setTime((unixTimeNewYear2001 + parseInt(todos[i].due)) * 1000);
+		  html += "Due: "+date.toLocaleDateString();
+		}
+
+		html += "</li>";
 	  }
 	}
 
