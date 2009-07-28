@@ -18,6 +18,18 @@
 	  </dict>
 	  <dict>
 		<key>cell</key>
+		<string>PSSwitchCell</string>
+		<key>default</key>
+		<false/>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>key</key>
+		<string>showProjects</string>
+		<key>label</key>
+		<string>Show Projects?</string>
+	  </dict>
+	  <dict>
+		<key>cell</key>
 		<string>PSEditTextCell</string>
 		<key>default</key>
 		<integer>3</integer>
@@ -28,16 +40,7 @@
 		<key>label</key>
 		<string>Limit</string>
 	  </dict>
-	  <dict>
-		<key>cell</key>
-		<string>PSEditTextCell</string>
-		<key>defaults</key>
-		<string>cx.ath.the-kenny.ThingsPlugin</string>
-		<key>key</key>
-		<string>databasePath</string>
-		<key>label</key>
-		<string>Path</string>
-	  </dict>
+	  
 	  <dict>
 		<key>cell</key>
 		<string>PSLinkListCell</string>
@@ -91,6 +94,16 @@
 		  <string>desc</string>
 		  <string>asc</string>
 		</array>
+	  </dict>
+	  <dict>
+		<key>cell</key>
+		<string>PSEditTextCell</string>
+		<key>defaults</key>
+		<string>cx.ath.the-kenny.ThingsPlugin</string>
+		<key>key</key>
+		<string>databasePath</string>
+		<key>label</key>
+		<string>Path</string>
 	  </dict>
 	</array>
   </dict>
