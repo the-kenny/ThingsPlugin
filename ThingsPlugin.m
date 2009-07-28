@@ -46,25 +46,25 @@
   preferencesPath = @"/User/Library/Preferences/cx.ath.the-kenny.ThingsPlugin.plist";
 
   //The different sql-queries
-  NSString *todaySql = @"select title,dueDate from Task where status = 1 and type = 2 and flagged = 1";
+  NSString *todaySql = @"select title,dueDate from Task as t1 where status = 1 and type = 2 and flagged = 1";
 
-  NSString *nextSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 2";
+  NSString *nextSql = @"select title,dueDate from Task as t1 where status = 1 and type = 2 and focus = 2";
 
-  NSString *somedaySql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 16";
+  NSString *somedaySql = @"select title,dueDate from as t1 Task where status = 1 and type = 2 and focus = 16";
 
-  NSString *inboxSql = @"select title,dueDate from Task where status = 1 and type = 2 and focus = 1";
+  NSString *inboxSql = @"select title,dueDate from Task as t1 where status = 1 and type = 2 and focus = 1";
 
-  NSString *allSql = @"select title,dueDate from Task where status = 1";
+  NSString *allSql = @"select title,dueDate from Task as t1 where status = 1";
 
   NSString *todaySqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where t1.status = 1 and t1.type = 2 and t1.flagged = 1";
 
-  NSString *nextSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1 and type = 2 and focus = 2";
+  NSString *nextSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where t1.status = 1 and t1.type = 2 and t1.focus = 2";
 
-  NSString *somedaySqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1 and type = 2 and focus = 16";
+  NSString *somedaySqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where t1.status = 1 and t1.type = 2 and t1.focus = 16";
 
-  NSString *inboxSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1 and type = 2 and focus = 1";
+  NSString *inboxSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where t1.status = 1 and t1.type = 2 and t1.focus = 1";
 
-  NSString *allSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1";
+  NSString *allSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where t1.status = 1";
 
   //Add the to a dictionary to have access witht the settings-keys
   sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
@@ -143,16 +143,24 @@
 
   if(sqlite3_open([[preferences objectForKey:@"databasePath"] UTF8String], &database) == SQLITE_OK) {
 
+	bool showProjects = [[preferences objectForKey:@"showProjects"] boolValue];
+
 	/*
 	  NSString *sql = [NSString stringWithFormat:@"%@ limit %i;",
 	  todaySql,
 	  [[preferences valueForKey:@"Limit"] intValue]];
 	*/
 
+	NSString* rawSql = nil;
+	if(showProjects != true)
+	  rawSql = [sqlDict objectForKey:[preferences objectForKey:@"List"]];
+	else
+	  rawSql = [sqlDict objectForKey:[[preferences objectForKey:@"List"] 
+										   stringByAppendingString:@"Projects"]];
+
 	//Build the query (query + ordering + limit)
-	NSString *sql = [NSString stringWithFormat:@"%@ order by createdDate %@ limit %i", 
-							  [sqlDict objectForKey:
-										 [preferences objectForKey:@"List"]], 
+	NSString *sql = [NSString stringWithFormat:@"%@ order by t1.createdDate %@ limit %i", 
+							  rawSql, 
 							  [preferences objectForKey:@"Order"],
 							  queryLimit];
 
@@ -171,14 +179,31 @@
 		const char *cDue  = sqlite3_column_text(compiledStatement, 1);
 		if(cDue == NULL)
 		  cDue = "";
-		
+	
+
 		NSString *aText = [NSString stringWithUTF8String:cText];
 		NSString *aDue = [NSString stringWithUTF8String:cDue];
 
-		NSDictionary *todoDict = [NSDictionary dictionaryWithObjectsAndKeys:
-												 aText, @"text",
-											   aDue, @"due",
-											   nil];
+		NSDictionary *todoDict = nil;
+		if(showProjects == true) {
+
+		  const char *cProject = sqlite3_column_text(compiledStatement, 2);
+		  if(cProject == NULL)
+			cProject = "";
+
+		  NSString *aProject = [NSString stringWithUTF8String:cProject];
+
+		  todoDict = [NSDictionary dictionaryWithObjectsAndKeys:
+									 aText, @"text",
+								   aDue, @"due",
+								   aProject, @"project",
+								   nil];
+		} else {
+		  todoDict = [NSDictionary dictionaryWithObjectsAndKeys:
+									 aText, @"text",
+								   aDue, @"due",
+								   nil];
+		}
 		
 		[todos addObject:todoDict];
 	  }
