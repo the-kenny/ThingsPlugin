@@ -56,6 +56,16 @@
 
   NSString *allSql = @"select title,dueDate from Task where status = 1";
 
+  NSString *todaySqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where t1.status = 1 and t1.type = 2 and t1.flagged = 1";
+
+  NSString *nextSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1 and type = 2 and focus = 2";
+
+  NSString *somedaySqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1 and type = 2 and focus = 16";
+
+  NSString *inboxSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1 and type = 2 and focus = 1";
+
+  NSString *allSqlProjects = @"select t1.title,t1.dueDate,t2.title from Task as t1  left join Task as t2 on t2.uuid = t1.project where status = 1";
+
   //Add the to a dictionary to have access witht the settings-keys
   sqlDict = [[NSDictionary alloc] initWithObjectsAndKeys:
 									todaySql, @"today",
@@ -63,6 +73,11 @@
 								  somedaySql, @"someday",
 								  inboxSql, @"inbox",
 								  allSql, @"all",
+								  todaySqlProjects, @"todayProjects",
+								  nextSqlProjects, @"nextProjects",
+								  somedaySqlProjects, @"somedayProjects",
+								  inboxSqlProjects, @"inboxProjects",
+								  allSqlProjects, @"allProjects",
 								  nil];
 
   preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:preferencesPath];
