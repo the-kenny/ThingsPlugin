@@ -23,6 +23,10 @@ ThingsPlugin.prototype.updateView = function(todo) {
 		  html += "Project: " + todos[i].project + "   "; 
 		
 		if(todos[i].due) {
+		  //Insert , if we show the project
+		  if(todos[i].project) 
+			html += ", ";
+
 		  var date = new Date();
 
 		  //The years are stored in seconds since the unix time at 01/01/2001
